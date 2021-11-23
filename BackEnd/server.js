@@ -117,6 +117,16 @@ app.put('/api/movies/:id', (req, res) => {
     })
 })
 
+// Deleting movie by id
+app.delete('/api/movies/:id', (req, res) => {
+    console.log("Delete movie: " + req.params.id)
+
+    // Asynchronous call to database - finds and deletes doc with parameterised id
+    MovieModel.findByIdAndDelete(req.params.id, (err, data) => {
+        res.send(data)
+    })
+})
+
 // Server app listening on port 4000
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
