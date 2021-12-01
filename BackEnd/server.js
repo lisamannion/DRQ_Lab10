@@ -4,6 +4,11 @@ const app = express()
 // Changed port from 3000 to 2000 so that its not running on the same port as the app
 const port = 4000
 
+// Configuration for sending build and static files for deployment
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../build')));
+app.use('/static', express.static(path.join(__dirname, 'build//static')));
+
 // Including body parser (Middleware)
 const bodyParser = require('body-parser')
 
@@ -14,16 +19,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // Including cors (Cross Origin Resource Sharing - for Security)
-const cors = require('cors')
+// const cors = require('cors')
 
-// Using cors
-app.use(cors())
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*")
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-    next()
-})
+// // Using cors
+// app.use(cors())
+// app.use(function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*")
+//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+//     next()
+// })
 
 // Including Mongoosejs package
 const mongoose = require('mongoose')
@@ -125,6 +130,11 @@ app.delete('/api/movies/:id', (req, res) => {
     MovieModel.findByIdAndDelete(req.params.id, (err, data) => {
         res.send(data)
     })
+})
+
+// Get on any other route and send the index.html file back
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../build/index.html'))
 })
 
 // Server app listening on port 4000
